@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BDIKKU — AI for Phenome × DNA × Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=New+York:opsz,wght@6..36,400;6..36,500;6..36,600&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22> <text y=%22.9em%22 font-size=%2290%22>🧬</text> </svg>">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:      #ffffff;
+      --off-white:  #f5f5f7;
+      --rule:       #d2d2d7;
+      --text-main:  #1d1d1f;
+      --text-sub:   #6e6e73;
+      --text-cap:   #86868b;
+      --blue:       #0071e3;
+      --blue-light: #e8f1fb;
+      --blue-hover: #0077ed;
+      --green:      #34c759;
+      --amber:      #f59e0b;
+      --serif:      'New York', 'Georgia', 'Times New Roman', serif;
+      --sans:       'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --radius:     14px;
+      --radius-sm:  8px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--white);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--rule);
+    }
+    .nav-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+    }
+    .nav-logo {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      text-decoration: none;
+      letter-spacing: -0.2px;
+    }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      font-size: 13px;
+      color: var(--text-main);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity .15s;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--white);
+      text-align: center;
+      padding: 100px 20px 72px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .hero-eyebrow {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      max-width: 760px;
+      margin: 0 auto 22px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--blue);
+    }
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-sub);
+      max-width: 560px;
+      margin: 0 auto 36px;
+      line-height: 1.55;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 22px;
+      border-radius: 980px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all .18s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--blue-hover); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,113,227,.25); }
+    .btn-secondary {
+      background: var(--off-white);
+      color: var(--text-main);
+      border: 1px solid var(--rule);
+    }
+    .btn-secondary:hover { background: #ebebf0; transform: translateY(-1px); }
+
+    /* ── BADGES ── */
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 36px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--off-white);
+      border: 1px solid var(--rule);
+      border-radius: 980px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-sub);
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+    }
+    .badge-dot.green { background: var(--green); }
+    .badge-dot.amber { background: var(--amber); }
+
+    /* ── SECTION WRAPPER ── */
+    .section {
+      padding: 80px 20px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .section:last-child { border-bottom: none; }
+    .section-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      font-size: 16px;
+      color: var(--text-sub);
+      max-width: 580px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    /* ── AUTHOR CARD ── */
+    .author-card {
+      background: var(--off-white);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+    }
+    .author-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0071e3 0%, #34c759 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .author-name {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .author-title { font-size: 14px; color: var(--text-sub); margin-bottom: 14px; }
+    .author-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .author-link {
+      font-size: 13px;
+      color: var(--blue);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .author-link:hover { text-decoration: underline; }
+
+    /* ── MATERIALS GRID ── */
+    .materials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .material-card {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .material-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.08); transform: translateY(-2px); }
+    .material-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    .material-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+    .material-title {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .material-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.55;
+      flex: 1;
+    }
+    .material-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--blue);
+      margin-top: 4px;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .tl-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 200px;
+      align-items: center;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--rule);
+      gap: 20px;
+    }
+    .tl-row:last-child { border-bottom: none; }
+    .tl-row:nth-child(even) { background: var(--off-white); }
+    .tl-time {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: var(--text-cap);
+      font-weight: 500;
+    }
+    .tl-topic { font-size: 14px; font-weight: 500; }
+    .tl-topic small { display: block; font-size: 12px; color: var(--text-sub); font-weight: 400; margin-top: 2px; }
+    .tl-dataset {
+      font-size: 12px;
+      color: var(--text-sub);
+      text-align: right;
+    }
+    .tl-header {
+      display: grid;
+      grid-template-columns: 130px 1fr 200px;
+      align-items: center;
+      padding: 12px 24px;
+      background: var(--text-main);
+      color: #fff;
+      gap: 20px;
+    }
+    .tl-header span { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+    .tl-header span:last-child { text-align: right; }
+
+    /* ── CURRICULUM PROBLEMS ── */
+    .problems-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media(max-width: 720px) { .problems-grid { grid-template-columns: 1fr; } }
+    .problem-card {
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .problem-header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .p1 .problem-header { background: linear-gradient(135deg, #e8f4fd 0%, #dbeafe 100%); }
+    .p2 .problem-header { background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 100%); }
+    .problem-num {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .problem-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
+    .problem-subtitle { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+    .problem-body { padding: 20px 24px; }
+    .topic-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .topic-list li {
+      font-size: 13px;
+      color: var(--text-sub);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .topic-list li::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--blue);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .topic-list li strong { color: var(--text-main); }
+
+    /* ── TECH TABLE ── */
+    .tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .tech-table th {
+      background: var(--text-main);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      text-align: left;
+    }
+    .tech-table td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: top;
+    }
+    .tech-table tr:last-child td { border-bottom: none; }
+    .tech-table tr:nth-child(even) td { background: var(--off-white); }
+    .tech-table code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: var(--off-white);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--blue);
+    }
+    .tech-table td:first-child { font-weight: 600; white-space: nowrap; }
+
+    /* ── SUMMARY OUTCOMES ── */
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .outcome-pill {
+      background: var(--off-white);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .outcome-icon { font-size: 18px; }
+
+    /* ── CODE BLOCK ── */
+    .code-block {
+      background: #1d1d1f;
+      color: #a8e6cf;
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+    .code-block .comment { color: #6e6e73; }
+    .code-block .cmd { color: #0a84ff; }
+
+    /* ── QUOTE ── */
+    .callout {
+      border-left: 3px solid var(--blue);
+      padding: 20px 24px;
+      background: var(--blue-light);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 15px;
+      font-style: italic;
+      color: var(--text-sub);
+      margin: 32px 0;
+    }
+    .callout strong { font-style: normal; color: var(--text-main); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--off-white);
+      border-top: 1px solid var(--rule);
+      padding: 56px 20px;
+      text-align: center;
+    }
+    .footer-inner { max-width: 980px; margin: 0 auto; }
+    .footer-title {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .footer-sub {
+      font-size: 15px;
+      color: var(--text-sub);
+      margin-bottom: 28px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .footer-links a {
+      font-size: 14px;
+      color: var(--blue);
+      text-decoration: none;
+    }
+    .footer-links a:hover { text-decoration: underline; }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-cap);
+      border-top: 1px solid var(--rule);
+      padding-top: 24px;
+      margin-top: 16px;
+    }
+
+    /* ── REPO TREE ── */
+    .repo-tree {
+      background: #1d1d1f;
+      color: #e8e8ed;
+      border-radius: var(--radius-sm);
+      padding: 24px 28px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.9;
+    }
+    .repo-tree .folder { color: #64d2ff; }
+    .repo-tree .file { color: #a8e6cf; }
+    .repo-tree .dim { color: #6e6e73; }
+
+    /* ── CITATION ── */
+    .citation {
+      background: var(--off-white);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12.5px;
+      line-height: 1.75;
+      color: var(--text-sub);
+      overflow-x: auto;
+    }
+
+    /* ── DIVIDER ── */
+    hr.thin {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 40px 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 720px) {
+      .author-card { flex-direction: column; padding: 24px; }
+      .tl-row { grid-template-columns: 1fr 2fr; }
+      .tl-row .tl-dataset { display: none; }
+      .tl-header .tl-header-dataset { display: none; }
+      .nav-links { display: none; }
+    }
+
+    /* ── ANIM ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero h1, .hero-sub, .hero-ctas { animation: fadeUp .55s ease both; }
+    .hero-sub  { animation-delay: .08s; }
+    .hero-ctas { animation-delay: .16s; }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#"><span>BDIKKU</span> Hackathon AI</a>
+    <ul class="nav-links">
+      <li><a href="#materials">Materials</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#curriculum">Curriculum</a></li>
+      <li><a href="#stack">Tech Stack</a></li>
+      <li><a href="#start">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <p class="hero-eyebrow">🧬 BDI Young Innovator Hackathon · Khon Kaen University</p>
+  <h1>AI for <em>Phenome</em> × <em>DNA</em> × Health Intelligence</h1>
+  <p class="hero-sub">
+    Building Data-Driven Systems for Next-Generation Healthcare &amp; Intelligent Living
+  </p>
+  <div class="hero-ctas">
+    <a class="btn btn-primary" href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank">
+      ▶&nbsp; Open in Google Colab
+    </a>
+    <a class="btn btn-secondary" href="https://github.com/kaopanboonyuen/BDIKKU" target="_blank">
+      ⭐&nbsp; GitHub Repository
+    </a>
+  </div>
+  <div class="badge-row">
+    <span class="badge"><span class="badge-dot"></span>Python 3.10+</span>
+    <span class="badge"><span class="badge-dot green"></span>XGBoost · LightGBM · CatBoost</span>
+    <span class="badge"><span class="badge-dot amber"></span>SHAP Explainability</span>
+    <span class="badge"><span class="badge-dot"></span>Survival Analysis</span>
+    <span class="badge"><span class="badge-dot green"></span>MIT License · Open Source</span>
+  </div>
+</section>
+<!-- ── AUTHOR ── -->
+<section class="section">
+  <div class="section-inner">
+
+    <p class="section-label">Instructor</p>
+    <h2 class="section-title">Meet Your Lecturer</h2>
+
+    <div class="author-card-modern">
+
+      <!-- avatar placeholder (clean minimal) -->
+      <div class="author-avatar-modern">
+        TP
+      </div>
+
+      <!-- content -->
+      <div class="author-content">
+
+        <div class="author-name">
+          Teerapong Panboonyuen, Ph.D.
+          <span class="author-nickname">(P'Kao)</span>
+        </div>
+
+        <div class="author-title">
+          Chulalongkorn University · Khon Kaen University, Thailand
+        </div>
+
+        <div class="author-subtitle">
+          AI & Health Intelligence Research · Machine Learning · Biomedical AI
+        </div>
+
+        <!-- links -->
+        <div class="author-links-modern">
+          <a href="mailto:teerapong.pa@chula.ac.th">📧 Email</a>
+          <a href="https://bdikku.com/home" target="_blank">🌐 Website</a>
+          <a href="https://github.com/kaopanboonyuen/BDIKKU" target="_blank">💻 GitHub</a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<style>
+.author-card-modern{
+  display:flex;
+  gap:18px;
+  padding:22px;
+  margin-top:18px;
+  background:#ffffff;
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.06);
+  align-items:flex-start;
+}
+
+/* avatar */
+.author-avatar-modern{
+  width:64px;
+  height:64px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#4f46e5,#06b6d4);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  letter-spacing:1px;
+  font-size:1rem;
+  flex-shrink:0;
+}
+
+/* text */
+.author-content{
+  flex:1;
+}
+
+.author-name{
+  font-size:1.1rem;
+  font-weight:700;
+  color:#111827;
+  margin-bottom:4px;
+}
+
+.author-nickname{
+  font-size:0.85rem;
+  font-weight:500;
+  color:#6b7280;
+  margin-left:6px;
+}
+
+.author-title{
+  font-size:0.95rem;
+  color:#374151;
+  margin-bottom:6px;
+}
+
+.author-subtitle{
+  font-size:0.85rem;
+  color:#6b7280;
+  margin-bottom:12px;
+}
+
+/* links */
+.author-links-modern{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.author-links-modern a{
+  font-size:0.85rem;
+  text-decoration:none;
+  padding:6px 10px;
+  border-radius:8px;
+  background:#f3f4f6;
+  color:#111827;
+  transition:0.2s;
+}
+
+.author-links-modern a:hover{
+  background:#e5e7eb;
+  transform:translateY(-1px);
+}
+
+/* mobile */
+@media (max-width:600px){
+  .author-card-modern{
+    flex-direction:column;
+  }
+}
+</style>
+
+<!-- ── LECTURE MATERIALS ── -->
+<section class="section" id="materials" style="background:var(--off-white);">
+  <div class="section-inner">
+    <p class="section-label">Resources</p>
+    <h2 class="section-title">Lecture Materials</h2>
+    <p class="section-desc">Everything you need — slides, notebooks, and datasets — all open-sourced and ready to run.</p>
+    <div class="materials-grid">
+
+      <a class="material-card" href="https://github.com/kaopanboonyuen/BDIKKU/blob/main/slides/BDIKKU_HackathonAI_PanboonyuenLecture.pdf" target="_blank">
+        <div class="material-icon">📄</div>
+        <div class="material-label">Lecture Slides</div>
+        <div class="material-title">BDIKKU Hackathon AI — Lecture PDF</div>
+        <div class="material-desc">Full slide deck covering DNA fundamentals, phenome science, health AI pipelines, and ML concepts used in the workshop.</div>
+        <div class="material-action">View PDF →</div>
+      </a>
+
+      <a class="material-card" href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank">
+        <div class="material-icon">📓</div>
+        <div class="material-label">Student Notebook</div>
+        <div class="material-title">Google Colab Notebook — Student Version</div>
+        <div class="material-desc">The hands-on workshop notebook with guided exercises for DNA classification and heart attack risk prediction. Fill in the blanks and learn by doing.</div>
+        <div class="material-action">Open in Colab →</div>
+      </a>
+
+      <a class="material-card" href="https://github.com/kaopanboonyuen/BDIKKU" target="_blank">
+        <div class="material-icon">📦</div>
+        <div class="material-label">Datasets</div>
+        <div class="material-title">Hackathon Datasets (Auto-Download)</div>
+        <div class="material-desc">DNA Sequence Dataset (multi-species gene family classification) and Heart Attack CSV (clinical cardiovascular risk data). Auto-fetched in the notebook.</div>
+        <div class="material-action">View Repository →</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── SCHEDULE ── -->
+<section class="section" id="schedule">
+  <div class="section-inner">
+    <p class="section-label">3-Hour Workshop</p>
+    <h2 class="section-title">Session Roadmap</h2>
+    <p class="section-desc">From foundations to final scoreboard — an intensive, structured journey through real health AI.</p>
+    <div class="timeline">
+      <div class="tl-header">
+        <span>Time</span>
+        <span>Topic</span>
+        <span style="text-align:right">Dataset</span>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time">0:00 – 0:20</div>
+        <div class="tl-topic">🌱 Foundations <small>DNA · Phenome · Health AI concepts · ML pipeline overview</small></div>
+        <div class="tl-dataset">—</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time">0:20 – 1:20</div>
+        <div class="tl-topic">🧬 Problem 1 — DNA Sequence Classification <small>k-mer engineering · PCA · XGBoost · SHAP</small></div>
+        <div class="tl-dataset">DNA Sequence Dataset</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time">1:20 – 1:30</div>
+        <div class="tl-topic">☕ Break</div>
+        <div class="tl-dataset">—</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time">1:30 – 2:50</div>
+        <div class="tl-topic">🫀 Problem 2 — Heart Attack Risk Prediction <small>SMOTE · Boosting · Survival Analysis · Cox PH</small></div>
+        <div class="tl-dataset">Heart_Attack.csv</div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-time">2:50 – 3:00</div>
+        <div class="tl-topic">🏆 Scoreboard, Wrap-Up &amp; Next Steps</div>
+        <div class="tl-dataset">—</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CURRICULUM ── -->
+<section class="section" id="curriculum" style="background:var(--off-white);">
+  <div class="section-inner">
+    <p class="section-label">Curriculum</p>
+    <h2 class="section-title">Two Real Health AI Problems</h2>
+    <p class="section-desc">Both problems use real datasets. Both demand real engineering. Both teach you how researchers think.</p>
+    <div class="problems-grid">
+
+      <div class="problem-card p1">
+        <div class="problem-header">
+          <div class="problem-num">🧬</div>
+          <div>
+            <div class="problem-title">Problem 1 — DNA Sequence Classification</div>
+            <div class="problem-subtitle">Kaggle · Multi-species Gene Family Dataset</div>
+          </div>
+        </div>
+        <div class="problem-body">
+          <ul class="topic-list">
+            <li><strong>1.1</strong> EDA — Load &amp; Explore DNA Data</li>
+            <li><strong>1.2</strong> Feature Engineering — k-mer Frequency Extraction</li>
+            <li><strong>1.3</strong> Dimensionality Reduction — PCA &amp; UMAP</li>
+            <li><strong>1.4</strong> Feature Selection — LASSO (L1 Regularization)</li>
+            <li><strong>1.5</strong> Tabular ML — XGBoost (Main Model)</li>
+            <li><strong>1.6</strong> Model Comparison — LightGBM · CatBoost · Random Forest</li>
+            <li><strong>1.7</strong> Interpretability — SHAP Values</li>
+            <li><strong>1.8</strong> Scoreboard &amp; Evaluation Summary</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="problem-card p2">
+        <div class="problem-header">
+          <div class="problem-num">🫀</div>
+          <div>
+            <div class="problem-title">Problem 2 — Heart Attack Risk Prediction</div>
+            <div class="problem-subtitle">UCI · Clinical Cardiovascular Dataset</div>
+          </div>
+        </div>
+        <div class="problem-body">
+          <ul class="topic-list">
+            <li><strong>2.1</strong> EDA — Load &amp; Explore Heart Attack Data</li>
+            <li><strong>2.2</strong> Class Imbalance — Class Weights &amp; SMOTE</li>
+            <li><strong>2.3</strong> Feature Selection — LASSO &amp; Elastic Net</li>
+            <li><strong>2.4</strong> Tabular ML — XGBoost Tuning &amp; Early Stopping</li>
+            <li><strong>2.5</strong> Model Comparison Scoreboard</li>
+            <li><strong>2.6</strong> Interpretability — SHAP + Permutation Importance</li>
+            <li><strong>2.7</strong> Survival Analysis — Cox Proportional Hazards</li>
+            <li><strong>2.8</strong> Final Scoreboard &amp; Clinical Insights</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout" style="margin-top:32px;">
+      <strong>Clinical Disclaimer:</strong> These are educational models built for learning. They are not intended for real clinical decision-making and require proper clinical validation before any medical use.
+    </div>
+  </div>
+</section>
+
+<!-- ── TECH STACK ── -->
+<section class="section" id="stack">
+  <div class="section-inner">
+    <p class="section-label">Technology</p>
+    <h2 class="section-title">Full Stack of Tools &amp; Libraries</h2>
+    <p class="section-desc">Industry-standard tools used by data scientists in health research and clinical AI.</p>
+    <table class="tech-table">
+      <thead>
+        <tr>
+          <th>Tool / Library</th>
+          <th>Role in Workshop</th>
+          <th>Key Concepts</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>XGBoost</td>
+          <td>Main classification model for both problems</td>
+          <td>Gradient boosting, early stopping, class weights</td>
+        </tr>
+        <tr>
+          <td>LightGBM</td>
+          <td>Model comparison baseline</td>
+          <td>Leaf-wise tree growth, fast training</td>
+        </tr>
+        <tr>
+          <td>CatBoost</td>
+          <td>Model comparison baseline</td>
+          <td>Categorical feature handling, symmetric trees</td>
+        </tr>
+        <tr>
+          <td>SHAP</td>
+          <td>Explainability for both problems</td>
+          <td>Global + local feature importance, beeswarm plots</td>
+        </tr>
+        <tr>
+          <td>scikit-learn</td>
+          <td>Core ML pipeline and evaluation</td>
+          <td>PCA, LASSO, cross-validation, metrics</td>
+        </tr>
+        <tr>
+          <td>imbalanced-learn</td>
+          <td>Handle class imbalance in heart data</td>
+          <td>SMOTE oversampling, resampling strategies</td>
+        </tr>
+        <tr>
+          <td>lifelines</td>
+          <td>Survival analysis — Problem 2</td>
+          <td>Cox PH model, Kaplan-Meier, log-rank test</td>
+        </tr>
+        <tr>
+          <td>Biopython</td>
+          <td>DNA sequence parsing</td>
+          <td>Nucleotide sequences, k-mer extraction</td>
+        </tr>
+        <tr>
+          <td>UMAP</td>
+          <td>Dimensionality reduction visualization</td>
+          <td>Non-linear manifold learning</td>
+        </tr>
+        <tr>
+          <td>Plotly · Seaborn · Matplotlib</td>
+          <td>All data visualizations</td>
+          <td>Interactive charts, confusion matrices, ROC curves</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── OUTCOMES ── -->
+<section class="section" style="background:var(--off-white);">
+  <div class="section-inner">
+    <p class="section-label">Learning Outcomes</p>
+    <h2 class="section-title">What You Will Walk Away With</h2>
+    <p class="section-desc">By the end of the 3-hour session, you will have covered the full lifecycle of a real health AI project.</p>
+    <div class="outcomes-grid">
+      <div class="outcome-pill"><span class="outcome-icon">🧬</span> DNA k-mer feature engineering</div>
+      <div class="outcome-pill"><span class="outcome-icon">📊</span> Gradient boosting ensemble models</div>
+      <div class="outcome-pill"><span class="outcome-icon">🔍</span> SHAP model interpretability</div>
+      <div class="outcome-pill"><span class="outcome-icon">⚖️</span> Handling class imbalance with SMOTE</div>
+      <div class="outcome-pill"><span class="outcome-icon">📉</span> PCA &amp; UMAP for high-dim data</div>
+      <div class="outcome-pill"><span class="outcome-icon">🏥</span> Clinical survival analysis (Cox PH)</div>
+      <div class="outcome-pill"><span class="outcome-icon">🎯</span> AUC-ROC, F1, Recall evaluation</div>
+      <div class="outcome-pill"><span class="outcome-icon">🚀</span> End-to-end ML pipeline thinking</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GET STARTED ── -->
+<section class="section" id="start">
+  <div class="section-inner">
+    <p class="section-label">Get Started</p>
+    <h2 class="section-title">Run in Minutes</h2>
+    <p class="section-desc">No local setup needed — everything runs on Google Colab. Or clone locally if you prefer.</p>
+
+    <p style="font-weight:600; margin-bottom:10px;">Option A — Google Colab (Recommended)</p>
+    <a class="btn btn-primary" href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank" style="display:inline-flex; margin-bottom:32px;">
+      ▶&nbsp; Open Notebook in Colab
+    </a>
+
+    <p style="font-weight:600; margin-bottom:10px;">Option B — Clone Locally</p>
+    <div class="code-block">
+<span class="comment"># Clone the repository</span>
+<span class="cmd">git</span> clone https://github.com/kaopanboonyuen/BDIKKU.git
+<span class="cmd">cd</span> BDIKKU
+
+<span class="comment"># Install dependencies</span>
+<span class="cmd">pip</span> install xgboost lightgbm catboost shap imbalanced-learn umap-learn lifelines plotly biopython
+
+<span class="comment"># Launch the notebook</span>
+<span class="cmd">jupyter</span> notebook notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb
+    </div>
+
+    <hr class="thin">
+
+    <p style="font-weight:600; margin-bottom:10px; margin-top:32px;">Repository Structure</p>
+    <div class="repo-tree">
+<span class="folder">BDIKKU/</span>
+│
+├── <span class="folder">slides/</span>
+│   └── <span class="file">BDIKKU_HackathonAI_PanboonyuenLecture.pdf</span>
+│
+├── <span class="folder">notebooks/</span>
+│   └── <span class="file">BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb</span>
+│
+├── <span class="folder">Datasets/</span>   <span class="dim"># auto-downloaded in notebook</span>
+│
+└── <span class="file">README.md</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── CITATION ── -->
+<section class="section" style="background:var(--off-white);">
+  <div class="section-inner">
+
+    <p class="section-label">Academic Citation</p>
+    <h2 class="section-title">Cite This Work</h2>
+
+    <p class="section-desc">
+      If this lecture, workshop, or repository supports your research, teaching, or projects,
+      please cite it using the reference below.
+    </p>
+
+    <!-- Citation Card -->
+    <div class="citation-card">
+      <div class="citation-header">
+        <span class="citation-badge">BibTeX</span>
+        <button class="copy-btn" onclick="copyCitation()">Copy</button>
+      </div>
+
+      <pre class="citation-block" id="citationText">@misc{panboonyuen2025bdikku,
+  title        = {AI for Phenome × DNA × Health Intelligence},
+  author       = {Teerapong Panboonyuen},
+  year         = {2025},
+  howpublished = {https://github.com/kaopanboonyuen/BDIKKU},
+  note         = {BDI Young Innovator Hackathon — AI for Health Workshop,
+                  Chulalongkorn University, Thailand}
+}</pre>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.citation-card{
+  margin-top:20px;
+  background:#fff;
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.05);
+  overflow:hidden;
+}
+
+.citation-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 16px;
+  border-bottom:1px solid rgba(0,0,0,0.06);
+  background:linear-gradient(90deg, #f8fafc, #ffffff);
+}
+
+.citation-badge{
+  font-size:0.75rem;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#e8f0ff;
+  color:#2b5cff;
+  letter-spacing:0.3px;
+}
+
+.copy-btn{
+  font-size:0.8rem;
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid rgba(0,0,0,0.12);
+  background:#fff;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.copy-btn:hover{
+  background:#f3f4f6;
+  transform:translateY(-1px);
+}
+
+.citation-block{
+  margin:0;
+  padding:16px;
+  font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size:0.85rem;
+  line-height:1.5;
+  white-space:pre;
+  overflow-x:auto;
+  color:#111827;
+}
+
+/* mobile */
+@media (max-width:600px){
+  .citation-block{
+    font-size:0.78rem;
+  }
+}
+</style>
+
+<script>
+function copyCitation(){
+  const text = document.getElementById("citationText").innerText;
+  navigator.clipboard.writeText(text);
+
+  const btn = document.querySelector(".copy-btn");
+  btn.innerText = "Copied!";
+  setTimeout(() => btn.innerText = "Copy", 1500);
+}
+</script>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-title">💪 Good Luck in the Hackathon!</div>
+    <div class="footer-sub"><em>"The best way to predict the future is to create it."</em> — P'Kao</div>
+    <div class="footer-links">
+      <a href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank">Open Colab Notebook</a>
+      <a href="https://github.com/kaopanboonyuen/BDIKKU" target="_blank">GitHub Repository</a>
+      <a href="https://bdikku.com/home" target="_blank">bdikku.com</a>
+      <a href="mailto:teerapong.pa@chula.ac.th">Contact P'Kao</a>
+    </div>
+    <div class="footer-copy">
+      🌍 Open-sourced for everyone. Use it. Share it. Build on it. &nbsp;·&nbsp; MIT License &nbsp;·&nbsp;
+      Teerapong Panboonyuen, Ph.D. · Chulalongkorn University
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
