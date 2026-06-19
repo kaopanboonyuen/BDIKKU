@@ -6,38 +6,51 @@
   <title>BDIKKU — AI for Phenome × DNA × Health</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=New+York:opsz,wght@6..36,400;6..36,500;6..36,600&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22> <text y=%22.9em%22 font-size=%2290%22>🧬</text> </svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --white:      #ffffff;
-      --off-white:  #f5f5f7;
-      --rule:       #d2d2d7;
-      --text-main:  #1d1d1f;
-      --text-sub:   #6e6e73;
-      --text-cap:   #86868b;
-      --blue:       #0071e3;
-      --blue-light: #e8f1fb;
-      --blue-hover: #0077ed;
-      --green:      #34c759;
-      --amber:      #f59e0b;
-      --serif:      'New York', 'Georgia', 'Times New Roman', serif;
-      --sans:       'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --radius:     14px;
-      --radius-sm:  8px;
+      --bg:       #050810;
+      --surface:  #0c1120;
+      --surface2: #111827;
+      --border:   rgba(255,255,255,0.08);
+      --border2:  rgba(255,255,255,0.14);
+      --text:     #f0f4ff;
+      --muted:    #8892a4;
+      --dim:      #4a5568;
+      --cyan:     #00d4ff;
+      --cyan-dim: rgba(0,212,255,0.12);
+      --violet:   #7c3aed;
+      --violet-dim: rgba(124,58,237,0.15);
+      --green:    #10b981;
+      --amber:    #f59e0b;
+      --mono:     'Space Mono', monospace;
+      --sans:     'Space Grotesk', system-ui, sans-serif;
+      --r:        12px;
+      --r-lg:     20px;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--sans);
-      background: var(--white);
-      color: var(--text-main);
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── PARTICLE CANVAS ── */
+    #dna-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
     }
 
     /* ── NAV ── */
@@ -45,105 +58,210 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255,255,255,0.82);
+      background: rgba(5,8,16,0.85);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-bottom: 1px solid var(--rule);
+      border-bottom: 1px solid var(--border);
     }
     .nav-inner {
-      max-width: 980px;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 52px;
+      height: 56px;
     }
     .nav-logo {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-main);
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
       text-decoration: none;
-      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .nav-logo span { color: var(--blue); }
-    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-logo .logo-accent { color: var(--cyan); }
+    .nav-logo .logo-sep { color: var(--dim); margin: 0 2px; }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
     .nav-links a {
       font-size: 13px;
-      color: var(--text-main);
+      font-weight: 500;
+      color: var(--muted);
       text-decoration: none;
-      opacity: 0.8;
-      transition: opacity .15s;
+      letter-spacing: 0.02em;
+      transition: color .2s;
     }
-    .nav-links a:hover { opacity: 1; }
+    .nav-links a:hover { color: var(--cyan); }
+
+    .nav-menu-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    /* mobile nav drawer */
+    .nav-drawer {
+      display: none;
+      position: fixed;
+      inset: 56px 0 0 0;
+      background: rgba(5,8,16,0.97);
+      backdrop-filter: blur(20px);
+      z-index: 99;
+      padding: 24px 20px;
+      flex-direction: column;
+      gap: 8px;
+      transform: translateY(-10px);
+      opacity: 0;
+      transition: opacity .2s, transform .2s;
+    }
+    .nav-drawer.open {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .nav-drawer a {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 14px 16px;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      transition: color .2s, background .2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-drawer a:hover { color: var(--cyan); background: var(--cyan-dim); border-color: rgba(0,212,255,0.2); }
 
     /* ── HERO ── */
     .hero {
-      background: var(--white);
+      position: relative;
+      z-index: 1;
+      padding: clamp(80px, 12vw, 140px) 20px clamp(60px, 8vw, 100px);
       text-align: center;
-      padding: 100px 20px 72px;
-      border-bottom: 1px solid var(--rule);
+      overflow: hidden;
     }
+
+    .hero-glow {
+      position: absolute;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(700px, 140vw);
+      height: min(700px, 140vw);
+      background: radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, rgba(124,58,237,0.05) 45%, transparent 70%);
+      pointer-events: none;
+      animation: pulse-glow 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
+    }
+
     .hero-eyebrow {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: .08em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .15em;
       text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 20px;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 999px;
+      padding: 6px 16px;
+      margin-bottom: 28px;
+      animation: fadeUp .5s ease both;
     }
+    .blink { animation: blink 1.2s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
     .hero h1 {
-      font-family: var(--serif);
-      font-size: clamp(2.4rem, 5vw, 3.8rem);
-      font-weight: 600;
-      line-height: 1.12;
-      letter-spacing: -0.02em;
-      color: var(--text-main);
-      max-width: 760px;
-      margin: 0 auto 22px;
+      font-size: clamp(2rem, 7vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      animation: fadeUp .6s .1s ease both;
     }
-    .hero h1 em {
-      font-style: normal;
-      color: var(--blue);
+    .hero h1 .word-phenome { color: var(--cyan); }
+    .hero h1 .word-dna {
+      background: linear-gradient(90deg, #7c3aed, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
+    .hero h1 .word-health { color: var(--green); }
+
     .hero-sub {
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--text-sub);
-      max-width: 560px;
+      font-size: clamp(15px, 2.5vw, 18px);
+      color: var(--muted);
+      max-width: 520px;
       margin: 0 auto 36px;
-      line-height: 1.55;
+      line-height: 1.6;
+      animation: fadeUp .6s .2s ease both;
     }
+
     .hero-ctas {
       display: flex;
       gap: 12px;
       justify-content: center;
       flex-wrap: wrap;
+      animation: fadeUp .6s .3s ease both;
+      margin-bottom: 44px;
     }
+
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      padding: 12px 22px;
-      border-radius: 980px;
-      font-size: 15px;
-      font-weight: 500;
+      gap: 8px;
+      padding: 13px 24px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
       text-decoration: none;
-      transition: all .18s;
+      transition: all .22s cubic-bezier(.4,0,.2,1);
       cursor: pointer;
       border: none;
+      white-space: nowrap;
+      font-family: var(--sans);
     }
     .btn-primary {
-      background: var(--blue);
+      background: linear-gradient(135deg, #00bcd4, #0071e3);
       color: #fff;
+      box-shadow: 0 0 24px rgba(0,212,255,0.25);
     }
-    .btn-primary:hover { background: var(--blue-hover); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,113,227,.25); }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 0 36px rgba(0,212,255,0.4);
+    }
     .btn-secondary {
-      background: var(--off-white);
-      color: var(--text-main);
-      border: 1px solid var(--rule);
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border2);
     }
-    .btn-secondary:hover { background: #ebebf0; transform: translateY(-1px); }
+    .btn-secondary:hover {
+      background: var(--surface);
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.25);
+    }
 
     /* ── BADGES ── */
     .badge-row {
@@ -151,602 +269,618 @@
       flex-wrap: wrap;
       gap: 8px;
       justify-content: center;
-      margin-top: 36px;
+      animation: fadeUp .6s .4s ease both;
     }
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      background: var(--off-white);
-      border: 1px solid var(--rule);
-      border-radius: 980px;
-      padding: 4px 12px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-sub);
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 13px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
     }
-    .badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--blue);
-    }
-    .badge-dot.green { background: var(--green); }
-    .badge-dot.amber { background: var(--amber); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot-cyan { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+    .dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .dot-amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+    .dot-violet { background: #a78bfa; box-shadow: 0 0 6px #a78bfa; }
 
-    /* ── SECTION WRAPPER ── */
+    /* ── SECTION ── */
     .section {
-      padding: 80px 20px;
-      border-bottom: 1px solid var(--rule);
+      position: relative;
+      z-index: 1;
+      padding: clamp(56px, 8vw, 96px) 20px;
+      border-top: 1px solid var(--border);
     }
-    .section:last-child { border-bottom: none; }
     .section-inner {
-      max-width: 980px;
+      max-width: 1080px;
       margin: 0 auto;
     }
     .section-label {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .1em;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .15em;
       text-transform: uppercase;
-      color: var(--blue);
+      color: var(--cyan);
       margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 20px; height: 2px;
+      background: var(--cyan);
     }
     .section-title {
-      font-family: var(--serif);
-      font-size: clamp(1.7rem, 3vw, 2.4rem);
-      font-weight: 600;
-      line-height: 1.2;
-      letter-spacing: -0.015em;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
       margin-bottom: 14px;
     }
     .section-desc {
-      font-size: 16px;
-      color: var(--text-sub);
-      max-width: 580px;
-      line-height: 1.65;
-      margin-bottom: 40px;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 36px;
     }
 
-    /* ── AUTHOR CARD ── */
+    /* ── INSTRUCTOR CARD ── */
     .author-card {
-      background: var(--off-white);
-      border: 1px solid var(--rule);
-      border-radius: var(--radius);
-      padding: 36px 40px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-lg);
+      padding: clamp(24px, 5vw, 40px);
       display: flex;
       align-items: flex-start;
-      gap: 32px;
+      gap: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .3s;
     }
+    .author-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+    }
+    .author-card:hover { border-color: rgba(0,212,255,0.3); }
     .author-avatar {
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0071e3 0%, #34c759 100%);
+      width: 68px; height: 68px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
       flex-shrink: 0;
+      letter-spacing: 1px;
+      box-shadow: 0 0 24px rgba(79,70,229,0.4);
     }
     .author-name {
-      font-family: var(--serif);
-      font-size: 1.3rem;
-      font-weight: 600;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: 700;
       margin-bottom: 4px;
     }
-    .author-title { font-size: 14px; color: var(--text-sub); margin-bottom: 14px; }
-    .author-links { display: flex; flex-wrap: wrap; gap: 10px; }
-    .author-link {
-      font-size: 13px;
-      color: var(--blue);
+    .author-nickname { color: var(--muted); font-weight: 400; font-size: 0.85em; margin-left: 6px; }
+    .author-title { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .author-sub { font-size: 12px; color: var(--dim); margin-bottom: 14px; }
+    .author-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .author-links a {
+      font-size: 12px;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: .2s;
+      display: flex; align-items: center; gap: 4px;
     }
-    .author-link:hover { text-decoration: underline; }
+    .author-links a:hover { color: var(--cyan); border-color: rgba(0,212,255,0.3); background: var(--cyan-dim); }
 
-    /* ── MATERIALS GRID ── */
+    /* ── MATERIAL CARDS ── */
     .materials-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: 14px;
     }
     .material-card {
-      background: var(--white);
-      border: 1px solid var(--rule);
-      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
       padding: 28px;
       text-decoration: none;
       color: inherit;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      transition: box-shadow .2s, transform .2s;
+      transition: all .25s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
     }
-    .material-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.08); transform: translateY(-2px); }
-    .material-icon {
-      font-size: 28px;
-      line-height: 1;
+    .material-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(0,212,255,0.04), transparent 60%);
+      opacity: 0;
+      transition: opacity .3s;
     }
+    .material-card:hover {
+      border-color: rgba(0,212,255,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,212,255,0.1);
+    }
+    .material-card:hover::after { opacity: 1; }
+    .material-icon { font-size: 28px; }
     .material-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .08em;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      color: var(--blue);
+      color: var(--cyan);
     }
-    .material-title {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.35;
-    }
-    .material-desc {
-      font-size: 13px;
-      color: var(--text-sub);
-      line-height: 1.55;
-      flex: 1;
-    }
+    .material-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
+    .material-desc { font-size: 13px; color: var(--muted); line-height: 1.6; flex: 1; }
     .material-action {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       font-size: 13px;
-      font-weight: 500;
-      color: var(--blue);
-      margin-top: 4px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-top: 6px;
     }
 
     /* ── TIMELINE ── */
     .timeline {
-      border: 1px solid var(--rule);
-      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
       overflow: hidden;
-    }
-    .tl-row {
-      display: grid;
-      grid-template-columns: 130px 1fr 200px;
-      align-items: center;
-      padding: 18px 24px;
-      border-bottom: 1px solid var(--rule);
-      gap: 20px;
-    }
-    .tl-row:last-child { border-bottom: none; }
-    .tl-row:nth-child(even) { background: var(--off-white); }
-    .tl-time {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 12px;
-      color: var(--text-cap);
-      font-weight: 500;
-    }
-    .tl-topic { font-size: 14px; font-weight: 500; }
-    .tl-topic small { display: block; font-size: 12px; color: var(--text-sub); font-weight: 400; margin-top: 2px; }
-    .tl-dataset {
-      font-size: 12px;
-      color: var(--text-sub);
-      text-align: right;
     }
     .tl-header {
       display: grid;
-      grid-template-columns: 130px 1fr 200px;
-      align-items: center;
-      padding: 12px 24px;
-      background: var(--text-main);
-      color: #fff;
-      gap: 20px;
+      grid-template-columns: 120px 1fr auto;
+      gap: 16px;
+      padding: 12px 20px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border2);
     }
-    .tl-header span { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
-    .tl-header span:last-child { text-align: right; }
+    .tl-header span {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+    .tl-row {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background .2s;
+    }
+    .tl-row:last-child { border-bottom: none; }
+    .tl-row:hover { background: rgba(255,255,255,0.02); }
+    .tl-time {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--dim);
+      white-space: nowrap;
+    }
+    .tl-topic { font-size: 13px; font-weight: 600; }
+    .tl-topic small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 3px; }
+    .tl-dataset {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--cyan);
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 6px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+    .tl-dash { font-family: var(--mono); font-size: 11px; color: var(--dim); }
 
-    /* ── CURRICULUM PROBLEMS ── */
+    /* ── PROBLEMS ── */
     .problems-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 16px;
     }
-    @media(max-width: 720px) { .problems-grid { grid-template-columns: 1fr; } }
     .problem-card {
-      border: 1px solid var(--rule);
-      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
       overflow: hidden;
+      transition: border-color .25s;
     }
-    .problem-header {
-      padding: 20px 24px;
+    .problem-card:hover { border-color: var(--border2); }
+    .p1 .problem-header-bar { background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,113,227,0.1)); border-bottom: 1px solid rgba(0,212,255,0.15); }
+    .p2 .problem-header-bar { background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(236,72,153,0.1)); border-bottom: 1px solid rgba(124,58,237,0.2); }
+    .problem-header-bar {
+      padding: 22px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 14px;
     }
-    .p1 .problem-header { background: linear-gradient(135deg, #e8f4fd 0%, #dbeafe 100%); }
-    .p2 .problem-header { background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 100%); }
     .problem-num {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
+      font-size: 28px;
+      line-height: 1;
       flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
     }
-    .problem-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
-    .problem-subtitle { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
-    .problem-body { padding: 20px 24px; }
-    .topic-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .problem-title { font-size: 14px; font-weight: 700; line-height: 1.3; }
+    .problem-subtitle { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .problem-body { padding: 22px; }
+    .topic-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
     .topic-list li {
-      font-size: 13px;
-      color: var(--text-sub);
+      font-size: 12px;
+      color: var(--muted);
       display: flex;
       align-items: baseline;
       gap: 8px;
+      line-height: 1.4;
     }
-    .topic-list li::before {
-      content: '';
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: var(--blue);
+    .topic-list li .step-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--cyan);
       flex-shrink: 0;
-      margin-top: 5px;
+      min-width: 22px;
     }
-    .topic-list li strong { color: var(--text-main); }
+    .topic-list li strong { color: var(--text); font-weight: 600; }
 
     /* ── TECH TABLE ── */
+    .tech-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      overflow-x: auto;
+    }
     .tech-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 14px;
+      font-size: 13px;
+      min-width: 560px;
     }
     .tech-table th {
-      background: var(--text-main);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: .07em;
+      background: var(--surface2);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
       text-transform: uppercase;
-      padding: 12px 16px;
+      color: var(--dim);
+      padding: 12px 18px;
       text-align: left;
     }
     .tech-table td {
-      padding: 13px 16px;
-      border-bottom: 1px solid var(--rule);
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
     .tech-table tr:last-child td { border-bottom: none; }
-    .tech-table tr:nth-child(even) td { background: var(--off-white); }
-    .tech-table code {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 12px;
-      background: var(--off-white);
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      padding: 1px 6px;
-      color: var(--blue);
-    }
-    .tech-table td:first-child { font-weight: 600; white-space: nowrap; }
+    .tech-table tr:hover td { background: rgba(255,255,255,0.025); }
+    .tech-table td:first-child { font-weight: 700; color: var(--cyan); white-space: nowrap; }
+    .tech-table td:nth-child(2) { color: var(--muted); }
+    .tech-table td:nth-child(3) { color: var(--dim); font-size: 12px; }
 
-    /* ── SUMMARY OUTCOMES ── */
+    /* ── OUTCOMES ── */
     .outcomes-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(min(200px, 45%), 1fr));
+      gap: 10px;
     }
     .outcome-pill {
-      background: var(--off-white);
-      border: 1px solid var(--rule);
-      border-radius: var(--radius-sm);
-      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 14px 16px;
       display: flex;
       align-items: center;
       gap: 10px;
       font-size: 13px;
       font-weight: 500;
+      transition: .2s;
     }
-    .outcome-icon { font-size: 18px; }
+    .outcome-pill:hover { border-color: var(--border2); background: var(--surface2); }
+    .outcome-icon { font-size: 20px; flex-shrink: 0; }
 
-    /* ── CODE BLOCK ── */
-    .code-block {
-      background: #1d1d1f;
-      color: #a8e6cf;
-      border-radius: var(--radius-sm);
-      padding: 20px 24px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 13px;
-      line-height: 1.7;
-      overflow-x: auto;
-    }
-    .code-block .comment { color: #6e6e73; }
-    .code-block .cmd { color: #0a84ff; }
-
-    /* ── QUOTE ── */
+    /* ── CALLOUT ── */
     .callout {
-      border-left: 3px solid var(--blue);
-      padding: 20px 24px;
-      background: var(--blue-light);
-      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-      font-size: 15px;
+      border-left: 3px solid var(--amber);
+      padding: 16px 20px;
+      background: rgba(245,158,11,0.06);
+      border-radius: 0 var(--r) var(--r) 0;
+      font-size: 13px;
       font-style: italic;
-      color: var(--text-sub);
-      margin: 32px 0;
+      color: var(--muted);
+      margin-top: 28px;
     }
-    .callout strong { font-style: normal; color: var(--text-main); }
+    .callout strong { font-style: normal; color: var(--amber); }
+
+    /* ── GET STARTED ── */
+    .start-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: clamp(28px, 6vw, 48px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .start-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.06), transparent 60%);
+    }
+    .start-title { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; margin-bottom: 10px; }
+    .start-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+    .option-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ── CITATION ── */
+    .citation-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .citation-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .citation-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: var(--cyan-dim);
+      color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.25);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .copy-btn {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border2);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: .2s;
+    }
+    .copy-btn:hover { background: var(--surface2); color: var(--text); }
+    .citation-block {
+      margin: 0;
+      padding: 20px 18px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--muted);
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .citation-block .key { color: var(--cyan); }
+    .citation-block .val { color: #a8e6cf; }
 
     /* ── FOOTER ── */
     footer {
-      background: var(--off-white);
-      border-top: 1px solid var(--rule);
-      padding: 56px 20px;
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: clamp(48px, 8vw, 80px) 20px;
       text-align: center;
     }
-    .footer-inner { max-width: 980px; margin: 0 auto; }
-    .footer-title {
-      font-family: var(--serif);
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 12px;
+    footer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 100%, rgba(124,58,237,0.06), transparent 60%);
+      pointer-events: none;
     }
-    .footer-sub {
-      font-size: 15px;
-      color: var(--text-sub);
-      margin-bottom: 28px;
-    }
+    .footer-inner { max-width: 720px; margin: 0 auto; position: relative; }
+    .footer-title { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; margin-bottom: 10px; }
+    .footer-quote { font-size: 14px; color: var(--muted); font-style: italic; margin-bottom: 32px; }
     .footer-links {
       display: flex;
-      gap: 24px;
-      justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 40px;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 36px;
     }
     .footer-links a {
-      font-size: 14px;
-      color: var(--blue);
-      text-decoration: none;
-    }
-    .footer-links a:hover { text-decoration: underline; }
-    .footer-copy {
-      font-size: 12px;
-      color: var(--text-cap);
-      border-top: 1px solid var(--rule);
-      padding-top: 24px;
-      margin-top: 16px;
-    }
-
-    /* ── REPO TREE ── */
-    .repo-tree {
-      background: #1d1d1f;
-      color: #e8e8ed;
-      border-radius: var(--radius-sm);
-      padding: 24px 28px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 13px;
-      line-height: 1.9;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      transition: .2s;
     }
-    .repo-tree .folder { color: #64d2ff; }
-    .repo-tree .file { color: #a8e6cf; }
-    .repo-tree .dim { color: #6e6e73; }
+    .footer-links a:hover { color: var(--cyan); border-color: rgba(0,212,255,0.3); background: var(--cyan-dim); }
+    .footer-copy { font-size: 11px; color: var(--dim); border-top: 1px solid var(--border); padding-top: 24px; font-family: var(--mono); }
 
-    /* ── CITATION ── */
-    .citation {
-      background: var(--off-white);
-      border: 1px solid var(--rule);
-      border-radius: var(--radius-sm);
-      padding: 20px 24px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 12.5px;
-      line-height: 1.75;
-      color: var(--text-sub);
-      overflow-x: auto;
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
     }
 
-    /* ── DIVIDER ── */
-    hr.thin {
-      border: none;
-      border-top: 1px solid var(--rule);
-      margin: 40px 0;
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ── DNA HELIX DECORATION ── */
+    .helix-wrap {
+      position: absolute;
+      right: -60px; top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.08;
+      pointer-events: none;
     }
 
     /* ── RESPONSIVE ── */
-    @media(max-width: 720px) {
-      .author-card { flex-direction: column; padding: 24px; }
-      .tl-row { grid-template-columns: 1fr 2fr; }
-      .tl-row .tl-dataset { display: none; }
-      .tl-header .tl-header-dataset { display: none; }
+    @media (max-width: 768px) {
       .nav-links { display: none; }
+      .nav-menu-btn { display: block; }
+      .tl-header, .tl-row { grid-template-columns: 90px 1fr; }
+      .tl-header .tl-col-3, .tl-row .tl-dataset, .tl-row .tl-dash { display: none; }
+      .problems-grid { grid-template-columns: 1fr; }
+      .helix-wrap { display: none; }
     }
 
-    /* ── ANIM ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @media (max-width: 480px) {
+      .hero-ctas .btn { font-size: 13px; padding: 11px 18px; }
+      .badge { font-size: 10px; }
+      .author-card { flex-direction: column; }
     }
-    .hero h1, .hero-sub, .hero-ctas { animation: fadeUp .55s ease both; }
-    .hero-sub  { animation-delay: .08s; }
-    .hero-ctas { animation-delay: .16s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
   </style>
 </head>
 <body>
 
+<!-- DNA Particle Canvas -->
+<canvas id="dna-canvas"></canvas>
+
 <!-- ── NAV ── -->
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="#"><span>BDIKKU</span> Hackathon AI</a>
+    <a class="nav-logo" href="#">
+      <span class="logo-accent">BDIKKU</span>
+      <span class="logo-sep">/</span>
+      <span style="color:var(--muted);font-weight:400;">Hackathon AI</span>
+    </a>
     <ul class="nav-links">
       <li><a href="#materials">Materials</a></li>
       <li><a href="#schedule">Schedule</a></li>
       <li><a href="#curriculum">Curriculum</a></li>
-      <li><a href="#stack">Tech Stack</a></li>
+      <li><a href="#stack">Stack</a></li>
       <li><a href="#start">Get Started</a></li>
     </ul>
+    <button class="nav-menu-btn" id="menuBtn" aria-label="Menu">☰</button>
   </div>
 </nav>
 
+<!-- Mobile Drawer -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="#materials" onclick="closeDrawer()">📄 Materials</a>
+  <a href="#schedule" onclick="closeDrawer()">🗓 Schedule</a>
+  <a href="#curriculum" onclick="closeDrawer()">📚 Curriculum</a>
+  <a href="#stack" onclick="closeDrawer()">🛠 Tech Stack</a>
+  <a href="#start" onclick="closeDrawer()">🚀 Get Started</a>
+</div>
+
 <!-- ── HERO ── -->
 <section class="hero">
-  <p class="hero-eyebrow">🧬 BDI Young Innovator Hackathon · Khon Kaen University</p>
-  <h1>AI for <em>Phenome</em> × <em>DNA</em> × Health Intelligence</h1>
+  <div class="hero-glow"></div>
+
+  <p class="hero-eyebrow">
+    <span class="blink">▋</span>
+    BDI Young Innovator Hackathon · Khon Kaen University
+  </p>
+
+  <h1>
+    AI for <span class="word-phenome">Phenome</span><br>
+    × <span class="word-dna">DNA</span>
+    × <span class="word-health">Health</span>
+  </h1>
+
   <p class="hero-sub">
     Building Data-Driven Systems for Next-Generation Healthcare &amp; Intelligent Living
   </p>
+
   <div class="hero-ctas">
     <a class="btn btn-primary" href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank">
-      ▶&nbsp; Open in Google Colab
+      ▶&nbsp; Open in Colab
     </a>
     <a class="btn btn-secondary" href="https://github.com/kaopanboonyuen/BDIKKU" target="_blank">
-      ⭐&nbsp; GitHub Repository
+      ⭐&nbsp; GitHub
     </a>
   </div>
+
   <div class="badge-row">
-    <span class="badge"><span class="badge-dot"></span>Python 3.10+</span>
-    <span class="badge"><span class="badge-dot green"></span>XGBoost · LightGBM · CatBoost</span>
-    <span class="badge"><span class="badge-dot amber"></span>SHAP Explainability</span>
-    <span class="badge"><span class="badge-dot"></span>Survival Analysis</span>
-    <span class="badge"><span class="badge-dot green"></span>MIT License · Open Source</span>
+    <span class="badge"><span class="dot dot-cyan"></span>Python 3.10+</span>
+    <span class="badge"><span class="dot dot-green"></span>XGBoost · LightGBM · CatBoost</span>
+    <span class="badge"><span class="dot dot-amber"></span>SHAP Explainability</span>
+    <span class="badge"><span class="dot dot-violet"></span>Survival Analysis</span>
+    <span class="badge"><span class="dot dot-green"></span>MIT License · Open Source</span>
   </div>
 </section>
-<!-- ── AUTHOR ── -->
+
+<!-- ── INSTRUCTOR ── -->
 <section class="section">
   <div class="section-inner">
-
     <p class="section-label">Instructor</p>
     <h2 class="section-title">Meet Your Lecturer</h2>
-
-    <div class="author-card-modern">
-
-      <!-- avatar placeholder (clean minimal) -->
-      <div class="author-avatar-modern">
-        TP
-      </div>
-
-      <!-- content -->
-      <div class="author-content">
-
+    <div class="author-card reveal">
+      <div class="author-avatar">TP</div>
+      <div>
         <div class="author-name">
           Teerapong Panboonyuen, Ph.D.
           <span class="author-nickname">(P'Kao)</span>
         </div>
-
-        <div class="author-title">
-          Chulalongkorn University · Khon Kaen University, Thailand
-        </div>
-
-        <div class="author-subtitle">
-          AI & Health Intelligence Research · Machine Learning · Biomedical AI
-        </div>
-
-        <!-- links -->
-        <div class="author-links-modern">
+        <div class="author-title">Chulalongkorn University · Khon Kaen University, Thailand</div>
+        <div class="author-sub">AI & Health Intelligence Research · Machine Learning · Biomedical AI</div>
+        <div class="author-links">
           <a href="mailto:teerapong.pa@chula.ac.th">📧 Email</a>
           <a href="https://bdikku.com/home" target="_blank">🌐 Website</a>
           <a href="https://github.com/kaopanboonyuen/BDIKKU" target="_blank">💻 GitHub</a>
         </div>
-
       </div>
-
     </div>
-
   </div>
 </section>
 
-<style>
-.author-card-modern{
-  display:flex;
-  gap:18px;
-  padding:22px;
-  margin-top:18px;
-  background:#ffffff;
-  border:1px solid rgba(0,0,0,0.08);
-  border-radius:18px;
-  box-shadow:0 12px 30px rgba(0,0,0,0.06);
-  align-items:flex-start;
-}
-
-/* avatar */
-.author-avatar-modern{
-  width:64px;
-  height:64px;
-  border-radius:16px;
-  background:linear-gradient(135deg,#4f46e5,#06b6d4);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  letter-spacing:1px;
-  font-size:1rem;
-  flex-shrink:0;
-}
-
-/* text */
-.author-content{
-  flex:1;
-}
-
-.author-name{
-  font-size:1.1rem;
-  font-weight:700;
-  color:#111827;
-  margin-bottom:4px;
-}
-
-.author-nickname{
-  font-size:0.85rem;
-  font-weight:500;
-  color:#6b7280;
-  margin-left:6px;
-}
-
-.author-title{
-  font-size:0.95rem;
-  color:#374151;
-  margin-bottom:6px;
-}
-
-.author-subtitle{
-  font-size:0.85rem;
-  color:#6b7280;
-  margin-bottom:12px;
-}
-
-/* links */
-.author-links-modern{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-}
-
-.author-links-modern a{
-  font-size:0.85rem;
-  text-decoration:none;
-  padding:6px 10px;
-  border-radius:8px;
-  background:#f3f4f6;
-  color:#111827;
-  transition:0.2s;
-}
-
-.author-links-modern a:hover{
-  background:#e5e7eb;
-  transform:translateY(-1px);
-}
-
-/* mobile */
-@media (max-width:600px){
-  .author-card-modern{
-    flex-direction:column;
-  }
-}
-</style>
-
-<!-- ── LECTURE MATERIALS ── -->
-<section class="section" id="materials" style="background:var(--off-white);">
+<!-- ── MATERIALS ── -->
+<section class="section" id="materials">
   <div class="section-inner">
     <p class="section-label">Resources</p>
     <h2 class="section-title">Lecture Materials</h2>
-    <p class="section-desc">Everything you need — slides, notebooks, and datasets — all open-sourced and ready to run.</p>
-    <div class="materials-grid">
+    <p class="section-desc">Everything you need — slides, notebooks, datasets — all open-sourced and ready to run.</p>
+    <div class="materials-grid reveal">
 
       <a class="material-card" href="https://github.com/kaopanboonyuen/BDIKKU/blob/main/slides/BDIKKU_HackathonAI_PanboonyuenLecture.pdf" target="_blank">
         <div class="material-icon">📄</div>
@@ -760,7 +894,7 @@
         <div class="material-icon">📓</div>
         <div class="material-label">Student Notebook</div>
         <div class="material-title">Google Colab Notebook — Student Version</div>
-        <div class="material-desc">The hands-on workshop notebook with guided exercises for DNA classification and heart attack risk prediction. Fill in the blanks and learn by doing.</div>
+        <div class="material-desc">Hands-on workshop notebook with guided exercises for DNA classification and heart attack risk prediction. Fill in the blanks and learn by doing.</div>
         <div class="material-action">Open in Colab →</div>
       </a>
 
@@ -782,26 +916,26 @@
     <p class="section-label">3-Hour Workshop</p>
     <h2 class="section-title">Session Roadmap</h2>
     <p class="section-desc">From foundations to final scoreboard — an intensive, structured journey through real health AI.</p>
-    <div class="timeline">
+    <div class="timeline reveal">
       <div class="tl-header">
         <span>Time</span>
         <span>Topic</span>
-        <span style="text-align:right">Dataset</span>
+        <span class="tl-col-3">Dataset</span>
       </div>
       <div class="tl-row">
         <div class="tl-time">0:00 – 0:20</div>
         <div class="tl-topic">🌱 Foundations <small>DNA · Phenome · Health AI concepts · ML pipeline overview</small></div>
-        <div class="tl-dataset">—</div>
+        <div class="tl-dash">—</div>
       </div>
       <div class="tl-row">
         <div class="tl-time">0:20 – 1:20</div>
         <div class="tl-topic">🧬 Problem 1 — DNA Sequence Classification <small>k-mer engineering · PCA · XGBoost · SHAP</small></div>
-        <div class="tl-dataset">DNA Sequence Dataset</div>
+        <div class="tl-dataset">DNA Dataset</div>
       </div>
       <div class="tl-row">
         <div class="tl-time">1:20 – 1:30</div>
         <div class="tl-topic">☕ Break</div>
-        <div class="tl-dataset">—</div>
+        <div class="tl-dash">—</div>
       </div>
       <div class="tl-row">
         <div class="tl-time">1:30 – 2:50</div>
@@ -811,22 +945,22 @@
       <div class="tl-row">
         <div class="tl-time">2:50 – 3:00</div>
         <div class="tl-topic">🏆 Scoreboard, Wrap-Up &amp; Next Steps</div>
-        <div class="tl-dataset">—</div>
+        <div class="tl-dash">—</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ── CURRICULUM ── -->
-<section class="section" id="curriculum" style="background:var(--off-white);">
+<section class="section" id="curriculum">
   <div class="section-inner">
     <p class="section-label">Curriculum</p>
     <h2 class="section-title">Two Real Health AI Problems</h2>
     <p class="section-desc">Both problems use real datasets. Both demand real engineering. Both teach you how researchers think.</p>
-    <div class="problems-grid">
+    <div class="problems-grid reveal">
 
       <div class="problem-card p1">
-        <div class="problem-header">
+        <div class="problem-header-bar">
           <div class="problem-num">🧬</div>
           <div>
             <div class="problem-title">Problem 1 — DNA Sequence Classification</div>
@@ -835,20 +969,20 @@
         </div>
         <div class="problem-body">
           <ul class="topic-list">
-            <li><strong>1.1</strong> EDA — Load &amp; Explore DNA Data</li>
-            <li><strong>1.2</strong> Feature Engineering — k-mer Frequency Extraction</li>
-            <li><strong>1.3</strong> Dimensionality Reduction — PCA &amp; UMAP</li>
-            <li><strong>1.4</strong> Feature Selection — LASSO (L1 Regularization)</li>
-            <li><strong>1.5</strong> Tabular ML — XGBoost (Main Model)</li>
-            <li><strong>1.6</strong> Model Comparison — LightGBM · CatBoost · Random Forest</li>
-            <li><strong>1.7</strong> Interpretability — SHAP Values</li>
-            <li><strong>1.8</strong> Scoreboard &amp; Evaluation Summary</li>
+            <li><span class="step-num">1.1</span><span><strong>EDA</strong> — Load &amp; Explore DNA Data</span></li>
+            <li><span class="step-num">1.2</span><span><strong>Feature Engineering</strong> — k-mer Frequency Extraction</span></li>
+            <li><span class="step-num">1.3</span><span><strong>Dimensionality Reduction</strong> — PCA &amp; UMAP</span></li>
+            <li><span class="step-num">1.4</span><span><strong>Feature Selection</strong> — LASSO (L1 Regularization)</span></li>
+            <li><span class="step-num">1.5</span><span><strong>Tabular ML</strong> — XGBoost (Main Model)</span></li>
+            <li><span class="step-num">1.6</span><span><strong>Model Comparison</strong> — LightGBM · CatBoost · RF</span></li>
+            <li><span class="step-num">1.7</span><span><strong>Interpretability</strong> — SHAP Values</span></li>
+            <li><span class="step-num">1.8</span><span><strong>Scoreboard</strong> &amp; Evaluation Summary</span></li>
           </ul>
         </div>
       </div>
 
       <div class="problem-card p2">
-        <div class="problem-header">
+        <div class="problem-header-bar">
           <div class="problem-num">🫀</div>
           <div>
             <div class="problem-title">Problem 2 — Heart Attack Risk Prediction</div>
@@ -857,21 +991,21 @@
         </div>
         <div class="problem-body">
           <ul class="topic-list">
-            <li><strong>2.1</strong> EDA — Load &amp; Explore Heart Attack Data</li>
-            <li><strong>2.2</strong> Class Imbalance — Class Weights &amp; SMOTE</li>
-            <li><strong>2.3</strong> Feature Selection — LASSO &amp; Elastic Net</li>
-            <li><strong>2.4</strong> Tabular ML — XGBoost Tuning &amp; Early Stopping</li>
-            <li><strong>2.5</strong> Model Comparison Scoreboard</li>
-            <li><strong>2.6</strong> Interpretability — SHAP + Permutation Importance</li>
-            <li><strong>2.7</strong> Survival Analysis — Cox Proportional Hazards</li>
-            <li><strong>2.8</strong> Final Scoreboard &amp; Clinical Insights</li>
+            <li><span class="step-num">2.1</span><span><strong>EDA</strong> — Load &amp; Explore Heart Attack Data</span></li>
+            <li><span class="step-num">2.2</span><span><strong>Class Imbalance</strong> — Class Weights &amp; SMOTE</span></li>
+            <li><span class="step-num">2.3</span><span><strong>Feature Selection</strong> — LASSO &amp; Elastic Net</span></li>
+            <li><span class="step-num">2.4</span><span><strong>Tabular ML</strong> — XGBoost Tuning &amp; Early Stopping</span></li>
+            <li><span class="step-num">2.5</span><span><strong>Model Comparison</strong> Scoreboard</span></li>
+            <li><span class="step-num">2.6</span><span><strong>Interpretability</strong> — SHAP + Permutation Importance</span></li>
+            <li><span class="step-num">2.7</span><span><strong>Survival Analysis</strong> — Cox Proportional Hazards</span></li>
+            <li><span class="step-num">2.8</span><span><strong>Final Scoreboard</strong> &amp; Clinical Insights</span></li>
           </ul>
         </div>
       </div>
 
     </div>
 
-    <div class="callout" style="margin-top:32px;">
+    <div class="callout">
       <strong>Clinical Disclaimer:</strong> These are educational models built for learning. They are not intended for real clinical decision-making and require proper clinical validation before any medical use.
     </div>
   </div>
@@ -883,77 +1017,39 @@
     <p class="section-label">Technology</p>
     <h2 class="section-title">Full Stack of Tools &amp; Libraries</h2>
     <p class="section-desc">Industry-standard tools used by data scientists in health research and clinical AI.</p>
-    <table class="tech-table">
-      <thead>
-        <tr>
-          <th>Tool / Library</th>
-          <th>Role in Workshop</th>
-          <th>Key Concepts</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>XGBoost</td>
-          <td>Main classification model for both problems</td>
-          <td>Gradient boosting, early stopping, class weights</td>
-        </tr>
-        <tr>
-          <td>LightGBM</td>
-          <td>Model comparison baseline</td>
-          <td>Leaf-wise tree growth, fast training</td>
-        </tr>
-        <tr>
-          <td>CatBoost</td>
-          <td>Model comparison baseline</td>
-          <td>Categorical feature handling, symmetric trees</td>
-        </tr>
-        <tr>
-          <td>SHAP</td>
-          <td>Explainability for both problems</td>
-          <td>Global + local feature importance, beeswarm plots</td>
-        </tr>
-        <tr>
-          <td>scikit-learn</td>
-          <td>Core ML pipeline and evaluation</td>
-          <td>PCA, LASSO, cross-validation, metrics</td>
-        </tr>
-        <tr>
-          <td>imbalanced-learn</td>
-          <td>Handle class imbalance in heart data</td>
-          <td>SMOTE oversampling, resampling strategies</td>
-        </tr>
-        <tr>
-          <td>lifelines</td>
-          <td>Survival analysis — Problem 2</td>
-          <td>Cox PH model, Kaplan-Meier, log-rank test</td>
-        </tr>
-        <tr>
-          <td>Biopython</td>
-          <td>DNA sequence parsing</td>
-          <td>Nucleotide sequences, k-mer extraction</td>
-        </tr>
-        <tr>
-          <td>UMAP</td>
-          <td>Dimensionality reduction visualization</td>
-          <td>Non-linear manifold learning</td>
-        </tr>
-        <tr>
-          <td>Plotly · Seaborn · Matplotlib</td>
-          <td>All data visualizations</td>
-          <td>Interactive charts, confusion matrices, ROC curves</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="tech-table-wrap reveal">
+      <table class="tech-table">
+        <thead>
+          <tr>
+            <th>Tool / Library</th>
+            <th>Role in Workshop</th>
+            <th>Key Concepts</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>XGBoost</td><td>Main classification model for both problems</td><td>Gradient boosting, early stopping, class weights</td></tr>
+          <tr><td>LightGBM</td><td>Model comparison baseline</td><td>Leaf-wise tree growth, fast training</td></tr>
+          <tr><td>CatBoost</td><td>Model comparison baseline</td><td>Categorical feature handling, symmetric trees</td></tr>
+          <tr><td>SHAP</td><td>Explainability for both problems</td><td>Global + local feature importance, beeswarm plots</td></tr>
+          <tr><td>scikit-learn</td><td>Core ML pipeline and evaluation</td><td>PCA, LASSO, cross-validation, metrics</td></tr>
+          <tr><td>imbalanced-learn</td><td>Handle class imbalance in heart data</td><td>SMOTE oversampling, resampling strategies</td></tr>
+          <tr><td>lifelines</td><td>Survival analysis — Problem 2</td><td>Cox PH model, Kaplan-Meier, log-rank test</td></tr>
+          <tr><td>Biopython</td><td>DNA sequence parsing</td><td>Nucleotide sequences, k-mer extraction</td></tr>
+          <tr><td>UMAP</td><td>Dimensionality reduction visualization</td><td>Non-linear manifold learning</td></tr>
+          <tr><td>Plotly · Seaborn · Matplotlib</td><td>All data visualizations</td><td>Interactive charts, confusion matrices, ROC curves</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 
 <!-- ── OUTCOMES ── -->
-<section class="section" style="background:var(--off-white);">
+<section class="section">
   <div class="section-inner">
     <p class="section-label">Learning Outcomes</p>
     <h2 class="section-title">What You Will Walk Away With</h2>
-    <p class="section-desc">By the end of the 3-hour session, you will have covered the full lifecycle of a real health AI project.</p>
-    <div class="outcomes-grid">
+    <p class="section-desc">By the end of the 3-hour session, you'll have covered the full lifecycle of a real health AI project.</p>
+    <div class="outcomes-grid reveal">
       <div class="outcome-pill"><span class="outcome-icon">🧬</span> DNA k-mer feature engineering</div>
       <div class="outcome-pill"><span class="outcome-icon">📊</span> Gradient boosting ensemble models</div>
       <div class="outcome-pill"><span class="outcome-icon">🔍</span> SHAP model interpretability</div>
@@ -969,139 +1065,174 @@
 <!-- ── GET STARTED ── -->
 <section class="section" id="start">
   <div class="section-inner">
-    <p class="section-label">Get Started</p>
-    <h2 class="section-title">Run in Minutes</h2>
-    <p class="section-desc">No local setup needed — everything runs on Google Colab. Or clone locally if you prefer.</p>
-
-    <p style="font-weight:600; margin-bottom:10px;">Option A — Google Colab (Recommended)</p>
-    <a class="btn btn-primary" href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank" style="display:inline-flex; margin-bottom:32px;">
-      ▶&nbsp; Open Notebook in Colab
-    </a>
+    <div class="start-card reveal">
+      <p class="option-label">// Option A — Recommended</p>
+      <div class="start-title">Run in Minutes</div>
+      <p class="start-sub">No local setup needed. Everything runs on Google Colab, free.</p>
+      <a class="btn btn-primary" href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank" style="margin: 0 auto; display: inline-flex;">
+        ▶&nbsp; Open Notebook in Colab
+      </a>
+    </div>
+  </div>
 </section>
 
 <!-- ── CITATION ── -->
-<section class="section" style="background:var(--off-white);">
+<section class="section">
   <div class="section-inner">
-
     <p class="section-label">Academic Citation</p>
     <h2 class="section-title">Cite This Work</h2>
-
-    <p class="section-desc">
-      If this lecture, workshop, or repository supports your research, teaching, or projects,
-      please cite it using the reference below.
-    </p>
-
-    <!-- Citation Card -->
-    <div class="citation-card">
+    <p class="section-desc">If this lecture, workshop, or repository supports your research or teaching, please cite it using the reference below.</p>
+    <div class="citation-card reveal">
       <div class="citation-header">
         <span class="citation-badge">BibTeX</span>
         <button class="copy-btn" onclick="copyCitation()">Copy</button>
       </div>
-
-      <pre class="citation-block" id="citationText">@misc{panboonyuen2026bdikku,
-  title        = {AI for Phenome × DNA × Health Intelligence},
-  author       = {Teerapong Panboonyuen},
-  year         = {2025},
-  howpublished = {https://github.com/kaopanboonyuen/BDIKKU},
-  note         = {BDI Young Innovator Hackathon — AI for Health Workshop,
-                  Chulalongkorn University, Thailand}
+      <pre class="citation-block" id="citationText"><span class="key">@misc</span>{panboonyuen2026bdikku,
+  <span class="key">title</span>        = {<span class="val">AI for Phenome × DNA × Health Intelligence</span>},
+  <span class="key">author</span>       = {<span class="val">Teerapong Panboonyuen</span>},
+  <span class="key">year</span>         = {<span class="val">2025</span>},
+  <span class="key">howpublished</span> = {<span class="val">https://github.com/kaopanboonyuen/BDIKKU</span>},
+  <span class="key">note</span>         = {<span class="val">BDI Young Innovator Hackathon — AI for Health Workshop,
+                  Chulalongkorn University, Thailand</span>}
 }</pre>
     </div>
-
   </div>
 </section>
-
-<style>
-.citation-card{
-  margin-top:20px;
-  background:#fff;
-  border:1px solid rgba(0,0,0,0.08);
-  border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.05);
-  overflow:hidden;
-}
-
-.citation-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px 16px;
-  border-bottom:1px solid rgba(0,0,0,0.06);
-  background:linear-gradient(90deg, #f8fafc, #ffffff);
-}
-
-.citation-badge{
-  font-size:0.75rem;
-  font-weight:600;
-  padding:4px 10px;
-  border-radius:999px;
-  background:#e8f0ff;
-  color:#2b5cff;
-  letter-spacing:0.3px;
-}
-
-.copy-btn{
-  font-size:0.8rem;
-  padding:6px 10px;
-  border-radius:8px;
-  border:1px solid rgba(0,0,0,0.12);
-  background:#fff;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.copy-btn:hover{
-  background:#f3f4f6;
-  transform:translateY(-1px);
-}
-
-.citation-block{
-  margin:0;
-  padding:16px;
-  font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size:0.85rem;
-  line-height:1.5;
-  white-space:pre;
-  overflow-x:auto;
-  color:#111827;
-}
-
-/* mobile */
-@media (max-width:600px){
-  .citation-block{
-    font-size:0.78rem;
-  }
-}
-</style>
-
-<script>
-function copyCitation(){
-  const text = document.getElementById("citationText").innerText;
-  navigator.clipboard.writeText(text);
-
-  const btn = document.querySelector(".copy-btn");
-  btn.innerText = "Copied!";
-  setTimeout(() => btn.innerText = "Copy", 1500);
-}
-</script>
 
 <!-- ── FOOTER ── -->
 <footer>
   <div class="footer-inner">
     <div class="footer-title">💪 Good Luck in the Hackathon!</div>
-    <div class="footer-sub"><em>"The best way to predict the future is to create it."</em> — P'Kao</div>
+    <div class="footer-quote">"The best way to predict the future is to create it." — P'Kao</div>
     <div class="footer-links">
-      <a href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank">Open Colab Notebook</a>
-      <a href="https://github.com/kaopanboonyuen/BDIKKU" target="_blank">GitHub Repository</a>
+      <a href="https://colab.research.google.com/github/kaopanboonyuen/BDIKKU/blob/main/notebooks/BDIKKU_Hackathon_AI_for_Phenome_DNA_and_Health_toStudent.ipynb" target="_blank">Open Colab</a>
+      <a href="https://github.com/kaopanboonyuen/BDIKKU" target="_blank">GitHub</a>
       <a href="https://bdikku.com/home" target="_blank">bdikku.com</a>
       <a href="mailto:teerapong.pa@chula.ac.th">Contact P'Kao</a>
     </div>
     <div class="footer-copy">
-      🌍 Open-sourced for everyone. Use it. Share it. Build on it. &nbsp;·&nbsp; MIT License &nbsp;·&nbsp;
-      Teerapong Panboonyuen, Ph.D. · Chulalongkorn University
+      Open-sourced for everyone. Use it. Share it. Build on it. · MIT License · Teerapong Panboonyuen, Ph.D.
     </div>
   </div>
 </footer>
+
+<script>
+/* ── MOBILE NAV ── */
+const menuBtn = document.getElementById('menuBtn');
+const navDrawer = document.getElementById('navDrawer');
+menuBtn.addEventListener('click', () => {
+  navDrawer.classList.toggle('open');
+  menuBtn.textContent = navDrawer.classList.contains('open') ? '✕' : '☰';
+});
+function closeDrawer() {
+  navDrawer.classList.remove('open');
+  menuBtn.textContent = '☰';
+}
+
+/* ── SCROLL REVEAL ── */
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => io.observe(el));
+
+/* ── COPY CITATION ── */
+function copyCitation() {
+  const raw = document.getElementById('citationText').innerText;
+  navigator.clipboard.writeText(raw);
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent = '✓ Copied!';
+  btn.style.color = 'var(--cyan)';
+  setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 1800);
+}
+
+/* ── DNA PARTICLE CANVAS ── */
+(function() {
+  const canvas = document.getElementById('dna-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, pts = [], animId;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function init() {
+    pts = [];
+    const N = Math.min(60, Math.floor(W * H / 18000));
+    for (let i = 0; i < N; i++) {
+      pts.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.5,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        hue: Math.random() > 0.5 ? 190 : 260,
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    // draw connections
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x;
+        const dy = pts[i].y - pts[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
+        if (d < 130) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `hsla(${(pts[i].hue + pts[j].hue)/2}, 80%, 65%, ${0.18 * (1 - d/130)})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+    // draw nodes
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 80%, 70%, 0.9)`;
+      ctx.fill();
+      // glow
+      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
+      g.addColorStop(0, `hsla(${p.hue}, 80%, 70%, 0.15)`);
+      g.addColorStop(1, `hsla(${p.hue}, 80%, 70%, 0)`);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    });
+  }
+
+  function update() {
+    pts.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+    });
+  }
+
+  function loop() {
+    update();
+    draw();
+    animId = requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', () => { resize(); init(); });
+  resize();
+  init();
+  loop();
+})();
+</script>
 
 </body>
 </html>
