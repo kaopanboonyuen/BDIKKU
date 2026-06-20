@@ -507,7 +507,7 @@ who will shape the future of AI-driven healthcare.
 
 ```bibtex
 @misc{panboonyuen2026bdikku,
-  title = {From Genomics to Phenomics: Machine Learning Foundations for Precision Medicine}
+  title        = {From Genomics to Phenomics: Machine Learning Foundations for Precision Medicine}
   author       = {Teerapong Panboonyuen},
   year         = {2026},
   howpublished = {\url{https://github.com/kaopanboonyuen/BDIKKU}},
